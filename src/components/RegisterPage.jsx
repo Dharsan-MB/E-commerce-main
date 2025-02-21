@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -8,16 +9,18 @@ const RegisterPage = () => {
   const [isRegistered, setIsRegistered] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle registration logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Confirm Password:', confirmPassword);
-    // Set registration success state
-    setIsRegistered(true);
-    // Redirect to login page after successful registration
-    setTimeout(() => navigate('/login'), 1000); // Redirect after 3 seconds
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/register', { email, password, confirmPassword });
+      console.log('Registration success:', response.data.message);
+      // Set registration success state
+      setIsRegistered(true);
+      // Redirect to login page after successful registration
+      setTimeout(() => navigate('/login'), 3000); // Redirect after 3 seconds
+    } catch (error) {
+      console.error('Registration error', error);
+    }
   };
 
   return (
