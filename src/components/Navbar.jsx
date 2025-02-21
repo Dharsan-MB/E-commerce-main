@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import { useCart } from './CartContext';
 
@@ -8,38 +8,58 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { getCartCount } = useCart();
   const cartCount = getCartCount();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log('Searching for:', searchQuery);
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${searchQuery}`);
+    }
   };
 
+  // Simplified navbar for login and register pages
+  if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/') {
+    return (
+      <nav className="bg-[#F8D706] shadow-md fixed w-full z-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <NavLink to="/home" className="flex items-center">
+              <span className="text-2xl font-bold text-green-600">Veggie</span>
+              <span className="text-2xl font-bold text-slate-700">Vault</span>
+            </NavLink>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
-    <nav className="bg-[#F8D706] shadow-md fixed w-full  z-50">
+    <nav className="bg-[#F8D706] shadow-md fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/home" className="flex items-center">
+          <NavLink to="/home" className="flex items-center">
             <span className="text-2xl font-bold text-green-600">Veggie</span>
             <span className="text-2xl font-bold text-slate-700">Vault</span>
-
-          </Link>
+          </NavLink>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/home" className="text-gray-600 hover:text-green-600">Home</Link>
-            <Link to="/vegetables" className="text-gray-600 hover:text-green-600">Vegetables</Link>
-            <Link to="/fruits" className="text-gray-600 hover:text-green-600">Fruits</Link>
-            <Link to="/groceries" className="text-gray-600 hover:text-green-600">Groceries</Link>
+            <NavLink to="/home" className="text-gray-600 hover:text-green-600">Home</NavLink>
+            <NavLink to="/vegetables" className="text-gray-600 hover:text-green-600">Vegetables</NavLink>
+            <NavLink to="/fruits" className="text-gray-600 hover:text-green-600">Fruits</NavLink>
+            <NavLink to="/groceries" className="text-gray-600 hover:text-green-600">Groceries</NavLink>
           </div>
 
           {/* Search Bar */}
           <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
-            <form onSubmit={handleSearch} className="w-full">
+            <form onSubmit={handleSearchSubmit} className="w-full">
               <div className="relative">
                 <input
                   type="text"
@@ -57,7 +77,7 @@ const Navbar = () => {
 
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link
+            <NavLink
               to="/cart"
               className="relative text-gray-800 hover:text-green-600 transition-colors duration-200"
             >
@@ -67,10 +87,10 @@ const Navbar = () => {
                   {cartCount}
                 </span>
               )}
-            </Link>
-            <Link to="/login" className="text-gray-600 hover:text-green-600">
+            </NavLink>
+            <NavLink to="/login" className="text-gray-600 hover:text-green-600">
               <FiUser size={24} />
-            </Link>
+            </NavLink>
           </div>
 
           {/* Mobile Menu Button */}
@@ -85,11 +105,11 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link to="/" className="block px-3 py-2 text-gray-600 hover:text-green-600">Home</Link>
-              <Link to="/vegetables" className="block px-3 py-2 text-gray-600 hover:text-green-600">Vegetables</Link>
-              <Link to="/fruits" className="block px-3 py-2 text-gray-600 hover:text-green-600">Fruits</Link>
-              <Link to="/groceries" className="block px-3 py-2 text-gray-600 hover:text-green-600">Groceries</Link>
-              <Link to="/cart" className="block px-3 py-2 text-gray-600 hover:text-green-600">Cart</Link>
+              <NavLink to="/home" className="block px-3 py-2 text-gray-600 hover:text-green-600">Home</NavLink>
+              <NavLink to="/vegetables" className="block px-3 py-2 text-gray-600 hover:text-green-600">Vegetables</NavLink>
+              <NavLink to="/fruits" className="block px-3 py-2 text-gray-600 hover:text-green-600">Fruits</NavLink>
+              <NavLink to="/groceries" className="block px-3 py-2 text-gray-600 hover:text-green-600">Groceries</NavLink>
+              <NavLink to="/cart" className="block px-3 py-2 text-gray-600 hover:text-green-600">Cart</NavLink>
             </div>
           </div>
         )}

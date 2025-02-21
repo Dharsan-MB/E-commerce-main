@@ -150,7 +150,7 @@ function Fruit() {
                   </div>
                   <button
                     onClick={() => handleAddToCart(fruit)}
-                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors duration: 200"
                   >
                     Add to Cart
                   </button>
