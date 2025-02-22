@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +9,8 @@ const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -76,12 +79,12 @@ const RegisterPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <div>
+                <div className="relative">
                   <label htmlFor="password" className="sr-only">Password</label>
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     required
                     className="relative block w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -89,13 +92,19 @@ const RegisterPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                  </div>
                 </div>
-                <div>
+                <div className="relative">
                   <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
                   <input
                     id="confirm-password"
                     name="confirm-password"
-                    type="password"
+                    type={showConfirmPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     required
                     className="relative block w-full px-3 py-2 border border-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -103,6 +112,12 @@ const RegisterPage = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                  </div>
                 </div>
               </div>
               <div>

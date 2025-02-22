@@ -5,12 +5,14 @@ import axios from 'axios';
 const PaymentPage = () => {
   const location = useLocation();
   const { totalAmount } = location.state || { totalAmount: 0 };
-  const [amount, setAmount] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [contact, setContact] = useState('');
 
   const handlePayment = async () => {
     try {
       const orderResponse = await axios.post('http://localhost:5000/api/payments/create-order', {
-        amount,
+        amount: totalAmount,
         currency: 'INR',
         receipt: 'receipt#1',
       }, {
@@ -42,9 +44,9 @@ const PaymentPage = () => {
           alert(paymentResponse.data.message);
         },
         prefill: {
-          name: 'Test User',
-          email: 'test@example.com',
-          contact: '9999999999',
+          name,
+          email,
+          contact,
         },
         theme: {
           color: '#3399cc',
@@ -65,16 +67,53 @@ const PaymentPage = () => {
         <div className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
+              <label htmlFor="name" className="sr-only">Name</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                className="relative block w-full px-3 py-2 border border-gray-300 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="sr-only">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="relative block w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="contact" className="sr-only">Contact</label>
+              <input
+                id="contact"
+                name="contact"
+                type="text"
+                required
+                className="relative block w-full px-3 py-2 border border-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Contact"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+            </div>
+            <div>
               <label htmlFor="amount" className="sr-only">Amount</label>
               <input
                 id="amount"
                 name="amount"
                 type="number"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                readOnly
+                value={totalAmount}
+                className="relative block w-full px-3 py-2 border border-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
           </div>
