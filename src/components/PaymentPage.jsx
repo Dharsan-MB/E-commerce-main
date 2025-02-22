@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from './CartContext';
+import img1 from "./../../public/qrcode.jpg";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { totalAmount } = location.state || { totalAmount: 0 };
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const { getTotalPrice } = useCart();
+  const totalAmount = getTotalPrice();
   const [contact, setContact] = useState('');
+  const [step, setStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState('card');
+
+  const handleProceed = () => {
+    setStep(2);
+  };
 
   const handlePayment = async () => {
+    setStep(3);
+  };
+
+  const confirmPayment = async () => {
     try {
       const orderResponse = await axios.post('http://localhost:5000/api/payments/create-order', {
         amount: totalAmount,
@@ -27,7 +39,7 @@ const PaymentPage = () => {
         key: 'your_razorpay_key_id',
         amount: order_amount,
         currency,
-        name: 'E-commerce',
+        name: 'Veggie Vault',
         description: 'Test Transaction',
         order_id,
         handler: async (response) => {
@@ -44,13 +56,12 @@ const PaymentPage = () => {
           alert(paymentResponse.data.message);
         },
         prefill: {
-          name,
-          email,
           contact,
         },
         theme: {
           color: '#3399cc',
         },
+        method: paymentMethod,
       };
 
       const rzp1 = new window.Razorpay(options);
@@ -60,72 +71,133 @@ const PaymentPage = () => {
     }
   };
 
+  const handleConfirmPayment = () => {
+    confirmPayment();
+    navigate('/Home', { state: { message: 'Order placed' } });
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900">Make a Payment</h2>
-        <div className="mt-8 space-y-6">
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="name" className="sr-only">Name</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+        <h1 className="text-3xl font-bold text-center text-green-600">Veggie Vault</h1>
+        {step === 1 ? (
+          <>
+            <div className="mt-4 text-center">
+              <span className="text-xl font-semibold">Total Amount:</span>
+              <span className="text-2xl font-bold text-gray-900"> ₹{totalAmount.toFixed(2)}</span>
             </div>
-            <div>
-              <label htmlFor="email" className="sr-only">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            <div className="mt-8 space-y-6">
+              <div className="rounded-md shadow-sm -space-y-px">
+                <div>
+                  <label htmlFor="contact" className="sr-only">Contact</label>
+                  <input
+                    id="contact"
+                    name="contact"
+                    type="text"
+                    required
+                    className="relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Enter Contact Details"
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <button
+                  onClick={handleProceed}
+                  className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Proceed
+                </button>
+              </div>
             </div>
-            <div>
-              <label htmlFor="contact" className="sr-only">Contact</label>
-              <input
-                id="contact"
-                name="contact"
-                type="text"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Contact"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-              />
+          </>
+        ) : step === 2 ? (
+          <>
+            <div className="mt-4 text-center">
+              <span className="text-xl font-semibold">Choose Payment Method</span>
             </div>
-            <div>
-              <label htmlFor="amount" className="sr-only">Amount</label>
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                readOnly
-                value={totalAmount}
-                className="relative block w-full px-3 py-2 border border-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
+            <div className="mt-8 space-y-6">
+              <div className="rounded-md shadow-sm -space-y-px">
+                <div
+                  className={`flex items-center p-4 border rounded-md cursor-pointer ${paymentMethod === 'card' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}
+                  onClick={() => setPaymentMethod('card')}
+                >
+                  <span className="ml-3 block text-sm font-medium text-gray-700">
+                    Credit/Debit Card
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center p-4 border rounded-md cursor-pointer ${paymentMethod === 'upi' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}
+                  onClick={() => setPaymentMethod('upi')}
+                >
+                  <span className="ml-3 block text-sm font-medium text-gray-700">
+                    UPI/QR
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center p-4 border rounded-md cursor-pointer ${paymentMethod === 'netbanking' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}
+                  onClick={() => setPaymentMethod('netbanking')}
+                >
+                  <span className="ml-3 block text-sm font-medium text-gray-700">
+                    Net Banking
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center p-4 border rounded-md cursor-pointer ${paymentMethod === 'wallet' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}
+                  onClick={() => setPaymentMethod('wallet')}
+                >
+                  <span className="ml-3 block text-sm font-medium text-gray-700">
+                    Wallet
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center p-4 border rounded-md cursor-pointer ${paymentMethod === 'emi' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}
+                  onClick={() => setPaymentMethod('emi')}
+                >
+                  <span className="ml-3 block text-sm font-medium text-gray-700">
+                    EMI
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center mt-8">
+                <span className="text-xl font-semibold">Total:</span>
+                <span className="text-2xl font-bold text-gray-900"> ₹{totalAmount.toFixed(2)}</span>
+              </div>
+              <div>
+                <button
+                  onClick={handlePayment}
+                  className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Pay Now
+                </button>
+              </div>
             </div>
-          </div>
-          <div>
-            <button
-              onClick={handlePayment}
-              className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Pay Now
-            </button>
-          </div>
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="mt-4 text-center">
+              <span className="text-xl font-semibold">Confirm Payment Method</span>
+            </div>
+            <div className="mt-8 space-y-6">
+              <div className="rounded-md shadow-sm">
+                <img src={img1} alt="Payment Methods" className="w-full h-auto" />
+              </div>
+              <div className="flex justify-between items-center mt-8">
+                <span className="text-xl font-semibold">Total:</span>
+                <span className="text-2xl font-bold text-gray-900"> ₹{totalAmount.toFixed(2)}</span>
+              </div>
+              <div>
+                <button
+                  onClick={handleConfirmPayment}
+                  className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Confirm Payment
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

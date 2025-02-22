@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, Typography, Grid, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -17,6 +17,19 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [message, setMessage] = useState(location.state?.message || '');
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, 2000); // Message will fade out after 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   const categories = [
     {
       title: 'Vegetables',
@@ -41,6 +54,11 @@ function Home() {
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
+      {message && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-md">
+          {message}
+        </div>
+      )}
       <Typography 
         variant="h2" 
         component="h1" 

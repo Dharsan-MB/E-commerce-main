@@ -10,7 +10,7 @@ const Cart = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
-        <Link to="/" className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+        <Link to="/Home" className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
           Continue Shopping
         </Link>
       </div>
@@ -71,13 +71,16 @@ const Cart = () => {
         </div>
         <div className="mt-6 flex justify-end space-x-4">
           <Link
-            to="/"
+            to="/Home"
             className="px-6 py-2 border rounded hover:bg-gray-50"
           >
             Continue Shopping
           </Link>
           <Link
-            to="/payment"
+            to={{
+              pathname: "/payment",
+              state: { totalAmount: total }
+            }}
             className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             Proceed to Checkout
