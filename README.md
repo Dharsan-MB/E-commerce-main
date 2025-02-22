@@ -8,6 +8,9 @@ An e-commerce platform that connects buyers and sellers, offering functionalitie
 
 ---
 
+## 📷 **Project Sample Video**  
+https://youtu.be/bWUWPWn2Pd0
+---
 ## 🚀 **Project Overview**  
 
 This project aims to build a full-fledged e-commerce website with the following key features:  
