@@ -21,7 +21,7 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
+      const response = await axios.post('http://localhost:55555/api/users/login', { email, password });
       console.log('Token:', response.data.token);
       // Redirect to home page after successful login
       navigate('/home');

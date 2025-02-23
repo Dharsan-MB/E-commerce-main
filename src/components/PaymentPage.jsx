@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from './CartContext';
-import img1 from "./../../public/qrcode.jpg";
+import img1 from "./../../src/qrcode.jpg";
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -23,7 +23,7 @@ const PaymentPage = () => {
 
   const confirmPayment = async () => {
     try {
-      const orderResponse = await axios.post('http://localhost:5000/api/payments/create-order', {
+      const orderResponse = await axios.post('http://localhost:55555/api/payments/create-order', {
         amount: totalAmount,
         currency: 'INR',
         receipt: 'receipt#1',
@@ -43,7 +43,7 @@ const PaymentPage = () => {
         description: 'Test Transaction',
         order_id,
         handler: async (response) => {
-          const paymentResponse = await axios.post('http://localhost:5000/api/payments/verify-payment', {
+          const paymentResponse = await axios.post('http://localhost:55555/api/payments/verify-payment', {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,

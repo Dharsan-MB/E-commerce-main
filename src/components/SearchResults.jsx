@@ -11,7 +11,7 @@ const SearchResults = () => {
       const query = new URLSearchParams(location.search).get('query');
       if (query) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/products/search?query=${query}`);
+          const response = await axios.get(`http://localhost:5555/api/products/search?query=${query}`);
           const products = response.data;
 
           // Check which category the product belongs to and navigate to the appropriate page
