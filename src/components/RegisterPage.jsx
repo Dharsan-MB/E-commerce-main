@@ -29,7 +29,10 @@ const RegisterPage = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:55555/api/users/register', { email, password, confirmPassword });
+      const response = await axios.post(
+        "https://e-commerce-backend-c3qy.onrender.com/api/users/register",
+        { email, password, confirmPassword }
+      );
       console.log('Registration success:', response.data.message);
       // Set registration success state
       setIsRegistered(true);

@@ -20,18 +20,21 @@ const PaymentPage = () => {
   const handlePayment = async () => {
     setStep(3);
   };
-
   const confirmPayment = async () => {
     try {
-      const orderResponse = await axios.post('http://localhost:55555/api/payments/create-order', {
-        amount: totalAmount,
-        currency: 'INR',
-        receipt: 'receipt#1',
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const orderResponse = await axios.post(
+        "https://e-commerce-backend-c3qy.onrender.com/api/payments/create-order",
+        {
+          amount: totalAmount,
+          currency: "INR",
+          receipt: "receipt#1",
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       const { id: order_id, amount: order_amount, currency } = orderResponse.data;
 
@@ -43,15 +46,19 @@ const PaymentPage = () => {
         description: 'Test Transaction',
         order_id,
         handler: async (response) => {
-          const paymentResponse = await axios.post('http://localhost:55555/api/payments/verify-payment', {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          }, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+          const paymentResponse = await axios.post(
+            "https://e-commerce-backend-c3qy.onrender.com/api/payments/verify-payment",
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
             },
-          });
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
 
           alert(paymentResponse.data.message);
         },
